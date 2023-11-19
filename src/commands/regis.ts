@@ -53,9 +53,6 @@ export const regis: Command = {
       return;
     }
 
-    user.setNickname(`N'${name}`);
-    user.roles.add(config.role.nong);
-
     const color = parseInt(
       Math.floor(Math.random() * 16777215).toString(16),
       16
@@ -65,10 +62,14 @@ export const regis: Command = {
       embeds: [
         {
           title: `ยินดีต้อนรับน้อง ${name}`,
+          description: `TCAS ${tcas}`,
           color: color,
           timestamp: new Date().toISOString(),
         },
       ],
     });
+
+    user.setNickname(`N'${name}`);
+    user.roles.add(config.role.nong);
   },
 };
