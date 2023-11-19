@@ -61,12 +61,12 @@ export const regis: Command = {
       16
     );
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [
         {
           title: `ยินดีต้อนรับน้อง ${name}`,
           color: color,
-          timestamp: new Date().toString(),
+          timestamp: new Date().toISOString(),
         },
       ],
     });
