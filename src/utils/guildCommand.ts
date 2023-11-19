@@ -2,7 +2,9 @@ import { Client, REST, Routes } from "discord.js";
 import { CommandList } from "../commands/_CommandList";
 
 export const guildCommand = async (client: Client, guildId: string) => {
-  const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN);
+  const rest = new REST({ version: "9" }).setToken(
+    process.env.DISCORD_TOKEN as string
+  );
 
   const commandData = CommandList.map((command) => command.data.toJSON());
 
