@@ -8,14 +8,14 @@ export const regis: Command = {
     .setDescription("ลงทะเบียน")
     .addNumberOption((option) =>
       option
-        .setName("TCAS")
+        .setName("tcas")
         .setDescription("TCAS 67 -> 68 -> 69")
         .setMinValue(67)
         .setRequired(true)
     )
     .addStringOption((option) =>
       option
-        .setName("Name")
+        .setName("name")
         .setDescription("น้องอยากให้พี่เรียกว่าอะไรดี")
         .setRequired(true)
     ),
@@ -23,8 +23,8 @@ export const regis: Command = {
     if (!interaction.isChatInputCommand()) return;
 
     await interaction.deferReply();
-    const tcas = interaction.options.getNumber("TCAS");
-    const name = interaction.options.getString("Name");
+    const tcas = interaction.options.getNumber("tcas");
+    const name = interaction.options.getString("name");
 
     let errors: string[] = [];
 
