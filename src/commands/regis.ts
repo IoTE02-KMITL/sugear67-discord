@@ -1,54 +1,53 @@
 import { SlashCommandBuilder } from "discord.js";
+import validator from "validator";
 import { Command } from "../interfaces/Command";
 import { config } from "../config/config";
+import { getUser } from "../utils/getUser";
 
 export const regis: Command = {
   data: new SlashCommandBuilder()
     .setName("regis")
     .setDescription("ลงทะเบียน")
-    .addNumberOption((option) =>
-      option
-        .setName("tcas")
-        .setDescription("TCAS 67 -> 68 -> 69")
-        .setMinValue(67)
-        .setRequired(true)
-    )
     .addStringOption((option) =>
       option
-        .setName("name")
-        .setDescription("น้องอยากให้พี่เรียกว่าอะไรดี")
+        .setName("email")
+        .setDescription("Email ที่น้องใช้ลงทะเบียนใน Form")
         .setRequired(true)
     ),
   run: async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    await interaction.deferReply();
-    const tcas = interaction.options.getNumber("tcas");
-    const name = interaction.options.getString("name");
+    await interaction.deferReply({
+      ephemeral: true,
+    });
+    const email = interaction.options.getString("email");
 
-    let errors: string[] = [];
-
-    if (typeof tcas !== "number") {
-      errors.push("TCAS must be a number");
-    } else {
-      if (tcas < 67) {
-        errors.push("TCAS must be greater than or equal to 67");
-      }
+    if (typeof email !== "string") {
+      await interaction.editReply({
+        content: "พี่ว่าเมลมันไม่ใช่ตัวหนังสือนะ",
+      });
+      return;
     }
 
-    if (typeof name !== "string") {
-      errors.push("Name must be a string");
+    if (!validator.isEmail(email)) {
+      await interaction.editReply({
+        content: "พี่ว่าเมลมันไม่ใช่อีเมลนะ",
+      });
+      return;
     }
 
-    if (errors.length > 0) {
-      await interaction.editReply(errors.join("\n"));
+    const found = await getUser(email);
+    if (found === null) {
+      await interaction.editReply({
+        content: "พี่ว่าไม่เจอน้องในระบบนะ",
+      });
       return;
     }
 
     const user = interaction.guild?.members.cache.get(interaction.user.id);
     if (!user) {
       await interaction.editReply({
-        content: "You are not in the server",
+        content: "น้องไม่ได้อยู่ในเซิร์ฟเวอร์นะ",
       });
       return;
     }
@@ -58,18 +57,20 @@ export const regis: Command = {
       16
     );
 
-    await interaction.editReply({
+    await interaction.deleteReply();
+
+    await interaction.followUp({
       embeds: [
         {
-          title: `ยินดีต้อนรับน้อง ${name}`,
-          description: `TCAS ${tcas}`,
+          title: `ยินดีต้อนรับน้อง ${found.name}`,
+          description: `TCAS ${found.tcas}`,
           color: color,
           timestamp: new Date().toISOString(),
         },
       ],
     });
 
-    user.setNickname(`N'${name}`);
     user.roles.add(config.role.nong);
+    user.setNickname(`N'${found.name}`);
   },
 };
