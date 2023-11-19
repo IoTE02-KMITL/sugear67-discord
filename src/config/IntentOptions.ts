@@ -4,4 +4,5 @@ export const IntentsOptions = [
   GatewayIntentBits.Guilds,
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.DirectMessages,
+  GatewayIntentBits.GuildMembers,
 ];
