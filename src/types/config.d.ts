@@ -6,6 +6,7 @@ const envVariables = z.object({
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_GUILD_ID: z.string(),
   DATABASE_URL: z.string(),
+  GOOGLESHEET_API: z.string(),
 });
 
 envVariables.parse(process.env);
