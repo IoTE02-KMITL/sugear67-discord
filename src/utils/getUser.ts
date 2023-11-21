@@ -1,22 +1,24 @@
-import { z } from "zod";
+import memory from "./memory";
+import { Users } from "../types/users";
 
 export const getUser = async (email: string) => {
-  const User = z.object({
-    email: z.string(),
-    tcas: z.number(),
-    name: z.string(),
-    firstname: z.string(),
-    lastname: z.string(),
-  });
+  const users = memory.get("users");
 
-  const url = `${process.env.GOOGLESHEET_API}?action=getEmails&email=${email}`;
+  const parsedUsers = Users.safeParse(users);
+  if (parsedUsers.success) {
+    const user = parsedUsers.data.find((u) => u.email === email);
+    if (user) return user;
+  }
 
+  const url = `${process.env.GOOGLESHEET_API}?action=getEmails`;
   const data = await fetch(url);
   const json = await data.json();
 
-  const parsed = User.safeParse(json);
+  const parsed = Users.safeParse(json);
   if (parsed.success) {
-    return parsed.data;
+    memory.set("users", parsed.data);
+    const user = parsed.data.find((u) => u.email === email);
+    if (user) return user;
   }
 
   return null;
