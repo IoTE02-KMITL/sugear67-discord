@@ -31,7 +31,7 @@ export const regis: Command = {
 
     if (!validator.isEmail(email)) {
       await interaction.editReply({
-        content: "พี่ว่าเมลมันไม่ใช่อีเมลนะ",
+        content: "พี่ว่าเมลมันแปลกๆ นะ",
       });
       return;
     }
@@ -39,7 +39,7 @@ export const regis: Command = {
     const found = await getUser(email);
     if (found === null) {
       await interaction.editReply({
-        content: "พี่ว่าไม่เจอน้องในระบบนะ",
+        content: "พี่ไปดูใน Form แล้ว พี่ไม่เห็นเมลน้องเลยอะ",
       });
       return;
     }
@@ -48,6 +48,13 @@ export const regis: Command = {
     if (!user) {
       await interaction.editReply({
         content: "น้องไม่ได้อยู่ในเซิร์ฟเวอร์นะ",
+      });
+      return;
+    }
+
+    if (user.roles.cache.has(config.role.nong)) {
+      await interaction.editReply({
+        content: "พี่เห็นนะว่าน้องลงทะเบียนไปแล้วนะ",
       });
       return;
     }
