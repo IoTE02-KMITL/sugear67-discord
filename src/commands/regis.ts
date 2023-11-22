@@ -77,7 +77,12 @@ export const regis: Command = {
       ],
     });
 
-    user.roles.add(config.role.nong);
-    user.setNickname(`N'${found.name}`);
+    await interaction.guild?.members.edit(user.id, {
+      nick: `N'${found.name}`,
+      roles: [config.role.nong],
+    });
+
+    // user.roles.add(config.role.nong);
+    // user.setNickname(`N'${found.name}`);
   },
 };
